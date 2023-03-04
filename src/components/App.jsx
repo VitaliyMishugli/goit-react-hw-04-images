@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // import { Component } from "react";
 import Searchbar from "./Searchbar/Searchbar";
 import ImageGallery from './ImageGallery/ImageGallery';
@@ -8,7 +8,90 @@ import API from '../services/api';
 
 
 export const App = () => {
-  
+  const [page, setPage] = useState(1);
+  const [result, setResult] = useState(null);
+  const [searchName, setSearchName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [total, setTotal] = useState(0);
+
+  const handleSubmitForm = (searchName) => {
+    setSearchName(searchName);
+    setPage(1);
+    setResult(null);
+    setIsLoadingMore(false);
+  }
+
+  const pageIncrement = () => {
+    setPage(state => state + 1);
+  }
+
+
+
+  useEffect(async () => {
+    try {
+      setIsLoading(true);
+
+      const { hits, totalHits } = await API.apiRequest(searchName, page);
+
+      if (totalHits === 0) {
+        alert("There's no answer by your request.");
+        setIsLoading(false);
+        return;
+      }
+
+      setResult(state => {
+        page === 1 ? hits : [...state, ...hits]
+      })
+
+      setTotal(state => {
+        page === 1
+          ? totalHits - hits.length
+          : totalHits - [...result, ...hits].length
+      })
+
+      setIsLoading(false);
+    }
+    catch (error) { return };
+  }, [page, searchName]);
+
+  // async () => {
+    // try {
+    //   setIsLoading(true);
+
+    //   const { hits, totalHits } = await API.apiRequest(searchName, page);
+
+    //   if (totalHits === 0) {
+    //     alert("There's no answer by your request.");
+    //     setIsLoading(false);
+    //     return;
+    //   }
+
+    //   setResult(state => {
+    //     page === 1 ? hits : [...state, ...hits]
+    //   })
+
+    //   setTotal(state => {
+    //     page === 1
+    //       ? totalHits - hits.length
+    //       : totalHits - [...result, ...hits].length
+    //   })
+
+    //   setIsLoading(false);
+    // }
+    // catch (error) { return };
+//   }
+// }, [page, searchName]
+
+  return (
+    <>
+      <Searchbar submit={handleSubmitForm} />
+      <ImageGallery queryResult={result} />
+      {isLoading && <Loader />}
+      {!!total && <Button pageIncrement={pageIncrement} />}
+        
+    </>
+  )
 }
 
 // ====== Class component ======
