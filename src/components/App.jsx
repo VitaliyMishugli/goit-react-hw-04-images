@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 // import { Component } from "react";
-import Searchbar from "./Searchbar/Searchbar";
+import {Searchbar} from "./Searchbar/Searchbar";
 import ImageGallery from './ImageGallery/ImageGallery';
 import { Loader } from "./Loader/Loader";
 import { Button } from "./Button/Button";
@@ -28,32 +28,45 @@ export const App = () => {
 
 
 
-  useEffect(async () => {
+  useEffect(() => {
     try {
       setIsLoading(true);
 
-      const { hits, totalHits } = await API.apiRequest(searchName, page);
+      // async function apiRequest(searchQuery, page) {
+      //   const data = await fetch(`https://pixabay.com/api/?q=${searchQuery}&page=${page}&key=29908422-6515e5e6655e3a8d0d58918bc&image_type=photo&orientation=horizontal&per_page=12`)
+      //     .then(res => res.json());
+      //   return data;
+      // }
 
-      if (totalHits === 0) {
-        alert("There's no answer by your request.");
+      async function getImages() {
+        const { hits, totalHits } = await API.apiRequest(searchName, page);
+        console.log(hits);
+        if (totalHits === 0) {
+          alert("There's no answer by your request.");
+          setIsLoading(false);
+          return;
+        }
+
+        setResult(state => {
+         return  page === 1 ? hits : [...state, ...hits]
+        })
+
+        setTotal(state => {
+         return  page === 1
+            ? totalHits - hits.length
+            : totalHits - [...result, ...hits].length
+        })
+
         setIsLoading(false);
-        return;
       }
-
-      setResult(state => {
-        page === 1 ? hits : [...state, ...hits]
-      })
-
-      setTotal(state => {
-        page === 1
-          ? totalHits - hits.length
-          : totalHits - [...result, ...hits].length
-      })
-
+      getImages();
       setIsLoading(false);
     }
+    
     catch (error) { return };
   }, [page, searchName]);
+
+  
 
   // async () => {
     // try {
