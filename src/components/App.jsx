@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 // import { Component } from "react";
 import {Searchbar} from "./Searchbar/Searchbar";
-import ImageGallery from './ImageGallery/ImageGallery';
+import {ImageGallery} from './ImageGallery/ImageGallery';
 import { Loader } from "./Loader/Loader";
 import { Button } from "./Button/Button";
 import API from '../services/api';
@@ -26,83 +26,50 @@ export const App = () => {
     setPage(state => state + 1);
   }
 
-
-
+  
   useEffect(() => {
-    try {
-      setIsLoading(true);
-
-      // async function apiRequest(searchQuery, page) {
-      //   const data = await fetch(`https://pixabay.com/api/?q=${searchQuery}&page=${page}&key=29908422-6515e5e6655e3a8d0d58918bc&image_type=photo&orientation=horizontal&per_page=12`)
-      //     .then(res => res.json());
-      //   return data;
-      // }
-
-      async function getImages() {
-        const { hits, totalHits } = await API.apiRequest(searchName, page);
-        console.log(hits);
-        if (totalHits === 0) {
-          alert("There's no answer by your request.");
-          setIsLoading(false);
-          return;
-        }
-
-        setResult(state => {
-         return  page === 1 ? hits : [...state, ...hits]
-        })
-
-        setTotal(state => {
-         return  page === 1
-            ? totalHits - hits.length
-            : totalHits - [...result, ...hits].length
-        })
-
-        setIsLoading(false);
-      }
-      getImages();
-      setIsLoading(false);
-    }
     
-    catch (error) { return };
-  }, [page, searchName]);
+      // try {
+        // setIsLoading(true);
+
+    function getImages(searchName, page) {
+      return fetch(`https://pixabay.com/api/?q=${searchName}&page=${page}&key=29908422-6515e5e6655e3a8d0d58918bc&image_type=photo&orientation=horizontal&per_page=12`)
+      .then(res => res.json())      
+    }
+    getImages()
+      .then(res => console.log(res.hits))
+      // .then(console.log(res.hits))
+        // console.log(hits);
+      //   if (totalHits === 0) {
+      //     alert("There's no answer by your request.");
+      //     setIsLoading(false);
+      //     return;
+      //   }
+
+      //   setResult(state => {
+      //     return page === 1 ? hits : [...state, ...hits]
+      //   })
+
+      //   setTotal(page === 1
+      //     ? totalHits - hits.length
+      //     : totalHits - [...result, ...hits].length)
+
+      //   setIsLoading(false);
+      //   }
+        console.log(getImages());
+      //   setIsLoading(false);
+      // }
+      // catch (error) { return };
+          
+  },[page, searchName]);
 
   
-
-  // async () => {
-    // try {
-    //   setIsLoading(true);
-
-    //   const { hits, totalHits } = await API.apiRequest(searchName, page);
-
-    //   if (totalHits === 0) {
-    //     alert("There's no answer by your request.");
-    //     setIsLoading(false);
-    //     return;
-    //   }
-
-    //   setResult(state => {
-    //     page === 1 ? hits : [...state, ...hits]
-    //   })
-
-    //   setTotal(state => {
-    //     page === 1
-    //       ? totalHits - hits.length
-    //       : totalHits - [...result, ...hits].length
-    //   })
-
-    //   setIsLoading(false);
-    // }
-    // catch (error) { return };
-//   }
-// }, [page, searchName]
-
   return (
     <>
       <Searchbar submit={handleSubmitForm} />
       <ImageGallery queryResult={result} />
       {isLoading && <Loader />}
-      {!!total && <Button pageIncrement={pageIncrement} />}
-        
+      {!!total && <Button pageIncrement={pageIncrement} />}        
     </>
   )
 }
