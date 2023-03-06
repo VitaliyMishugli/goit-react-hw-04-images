@@ -20,7 +20,7 @@ export const Searchbar = ({submit}) => {
     if (searchQuery === '') {
       return alert("Enter search query!");
     }
-    submit();
+    submit(searchName);
     setSearchName('');
   }
 

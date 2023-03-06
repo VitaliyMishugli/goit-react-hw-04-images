@@ -15,8 +15,8 @@ export const App = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [total, setTotal] = useState(0);
 
-  const handleSubmitForm = (searchName) => {
-    setSearchName(searchName);
+  const handleSubmitForm = (searchQuery) => {
+    setSearchName(searchQuery);
     setPage(1);
     setResult(null);
     setIsLoadingMore(false);
@@ -28,17 +28,58 @@ export const App = () => {
 
   
   useEffect(() => {
-    
-      // try {
-        // setIsLoading(true);
-
-    function getImages(searchName, page) {
-      return fetch(`https://pixabay.com/api/?q=${searchName}&page=${page}&key=29908422-6515e5e6655e3a8d0d58918bc&image_type=photo&orientation=horizontal&per_page=12`)
-      .then(res => res.json())      
+    if (searchName === '') {
+      return;
     }
-    getImages()
-      .then(res => console.log(res.hits))
-      // .then(console.log(res.hits))
+      // try {
+        setIsLoading(true);
+
+    async function getImages(searchQuery, pageNum) {
+      const result = await API.apiRequest(searchQuery, pageNum); 
+      return result.json();
+    }
+    getImages(searchName, page)
+      .then(res => {
+      const { hits, totalHits } = res;
+
+         if (totalHits === 0) {
+          alert("There's no answer by your request.");
+          setIsLoading(false);
+          return;
+        }
+
+        setResult(state => {
+          return page === 1 ? hits : [...state, ...hits]
+        })
+
+        setTotal(page === 1
+          ? totalHits - hits.length
+          : totalHits - [...result, ...hits].length)
+
+        setIsLoading(false);
+        }
+
+    );
+        // console.log(getImages.hits);
+        setIsLoading(false);
+      // }
+      // catch (error) { return };
+          
+  },[page, searchName]);
+
+  
+  return (
+    <>
+      <Searchbar submit={handleSubmitForm} />
+      <ImageGallery queryResult={result} />
+      {isLoading && <Loader />}
+      {!!total && <Button pageIncrement={pageIncrement} />}        
+    </>
+  )
+}
+
+// ====
+ // .then(console.log(res.hits))
         // console.log(hits);
       //   if (totalHits === 0) {
       //     alert("There's no answer by your request.");
@@ -56,23 +97,7 @@ export const App = () => {
 
       //   setIsLoading(false);
       //   }
-        console.log(getImages());
-      //   setIsLoading(false);
-      // }
-      // catch (error) { return };
-          
-  },[page, searchName]);
-
-  
-  return (
-    <>
-      <Searchbar submit={handleSubmitForm} />
-      <ImageGallery queryResult={result} />
-      {isLoading && <Loader />}
-      {!!total && <Button pageIncrement={pageIncrement} />}        
-    </>
-  )
-}
+// ====
 
 // ====== Class component ======
 // export default class App extends Component {
