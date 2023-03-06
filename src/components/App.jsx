@@ -31,7 +31,7 @@ export const App = () => {
     if (searchName === '') {
       return;
     }
-      // try {
+      try {
         setIsLoading(true);
 
     async function getImages(searchQuery, pageNum) {
@@ -62,8 +62,8 @@ export const App = () => {
     );
         // console.log(getImages.hits);
         setIsLoading(false);
-      // }
-      // catch (error) { return };
+      }
+      catch (error) { return };
           
   },[page, searchName]);
 
@@ -77,27 +77,6 @@ export const App = () => {
     </>
   )
 }
-
-// ====
- // .then(console.log(res.hits))
-        // console.log(hits);
-      //   if (totalHits === 0) {
-      //     alert("There's no answer by your request.");
-      //     setIsLoading(false);
-      //     return;
-      //   }
-
-      //   setResult(state => {
-      //     return page === 1 ? hits : [...state, ...hits]
-      //   })
-
-      //   setTotal(page === 1
-      //     ? totalHits - hits.length
-      //     : totalHits - [...result, ...hits].length)
-
-      //   setIsLoading(false);
-      //   }
-// ====
 
 // ====== Class component ======
 // export default class App extends Component {
