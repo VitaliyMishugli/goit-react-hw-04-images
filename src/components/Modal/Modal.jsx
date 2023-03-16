@@ -1,4 +1,4 @@
-// import React from 'react';
+import PropTypes from 'prop-types';
 import {useEffect} from 'react';
 import css from '../Modal/Modal.module.css';
 
@@ -9,8 +9,6 @@ export const Modal = ({ largeImg, closeModal }) => {
 
     return () => { window.removeEventListener('keydown', closeByEsc)}
   }, [])
-
-  
 
   const closeByEsc = e => {
     if (e.code !== "Escape") {
@@ -28,6 +26,11 @@ export const Modal = ({ largeImg, closeModal }) => {
         </div>
       </>
     );
+}
+
+Modal.propTypes = {
+  largeImg: PropTypes.string.isRequired,
+  closeModal: PropTypes.func.isRequired
 }
 
 // ==== Class component ========

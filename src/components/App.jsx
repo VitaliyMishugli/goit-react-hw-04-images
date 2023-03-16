@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-// import { Component } from "react";
 import {Searchbar} from "./Searchbar/Searchbar";
 import {ImageGallery} from './ImageGallery/ImageGallery';
 import { Loader } from "./Loader/Loader";
@@ -25,7 +24,6 @@ export const App = () => {
   const pageIncrement = () => {
     setPage(state => state + 1);
   }
-
   
   useEffect(() => {
     if (searchName === '') {
@@ -60,7 +58,6 @@ export const App = () => {
         }
 
     );
-        // console.log(getImages.hits);
         setIsLoading(false);
       }
       catch (error) { return };

@@ -1,5 +1,5 @@
-// import React  from 'react';
-import {useState}  from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import css from './ImageGalleryItem.module.css';
 import { Modal } from 'components/Modal/Modal';
 
@@ -19,6 +19,12 @@ export const ImageGalleryItem = ({image, largeImg}) => {
         {isModalOpen && <Modal largeImg={largeImg} closeModal={onToggleModal} />}
       </>
   )
+}
+
+ImageGalleryItem.propTypes = {
+  image: PropTypes.string.isRequired,
+  largeImg: PropTypes.string.isRequired
+  
 }
 
 
